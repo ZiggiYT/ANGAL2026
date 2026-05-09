@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izmēģinājuma tests angļu valodā 2026 (ANGOL)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --card: #16161a;
+            --accent: #00f2ff;
+            --accent-purple: #7c3aed;
+            --text: #f3f4f6;
+            --text-dim: #9ca3af;
+            --border: #3f3f46;
+            --gradient: linear-gradient(135deg, #00f2ff 0%, #7c3aed 100%);
+        }
+
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+
+        .eval-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #1a1a1c; }
+.eval-table th, .eval-table td { border: 1px solid #333; padding: 10px; text-align: left; }
+.eval-table th { background: #252529; color: var(--accent); }
+.point-radio { cursor: pointer; transform: scale(1.2); margin-right: 5px; }
+.writing-eval-box { background: #000; padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent-purple); margin-bottom: 20px; }
+
+
+        .top-nav {
+            position: fixed; top: 0; width: 100%; height: 60px; 
+            background: rgba(10, 10, 12, 0.95); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; z-index: 1000;
+        }
+
+        .screen { display: none; width: 100%; min-height: 100vh; padding: 100px 20px 60px; }
+        .screen.active { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .container { width: 100%; max-width: 1000px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 20px; }
+        
+        h2 { color: var(--accent); margin-top: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .instruction { font-style: italic; color: var(--text-dim); margin-bottom: 25px; line-height: 1.5; }
+
+        /* TABULU STILI */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; background: #0a0a0c; }
+        th, td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: middle; }
+        th { background: #1c1c22; font-weight: 600; text-align: center; }
+        .col-num { width: 50px; text-align: center; font-weight: bold; }
+        .col-input { width: 80px; text-align: center; }
+        
+        input[type="text"] {
+            width: 100%; background: #1c1c22; border: 1px solid var(--border); color: #fff;
+            padding: 8px; border-radius: 4px; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: bold;
+        }
+        input[type="text"]:focus { border-color: var(--accent); outline: none; }
+        
+        /* Radio pogas (Multiple Choice & T/F/NM) */
+        .mc-question { margin-bottom: 25px; }
+        .mc-options { margin-left: 20px; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .mc-options label { cursor: pointer; display: flex; align-items: baseline; gap: 8px; }
+        .mc-options input[type="radio"] { position: relative; top: 2px; }
+
+        /* Pogas */
+        .btn {
+            background: var(--gradient); color: #000; border: none; padding: 15px 30px; border-radius: 8px;
+            font-weight: 800; cursor: pointer; text-transform: uppercase; display: block; margin: 30px auto 0;
+        }
+
+        /* Atbilžu lapas */
+        .answer-section { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
+        .answer-section:last-child { border-bottom: none; }
+        .answer-section h3 { color: var(--accent-purple); margin-top: 0; }
+        .ans-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+        .ans-box { background: #1c1c22; border: 1px solid var(--border); border-radius: 6px; padding: 10px; text-align: center; }
+        .ans-box span { display: block; font-size: 0.8rem; color: var(--text-dim); }
+        .ans-box b { color: var(--accent); font-size: 1.1rem; }
+
+        /* Rakstīšanas daļa - UZLABOTA */
+        .writing-task-text { 
+            margin-bottom: 50px; /* Ievērojams attālums no notes */
+            font-size: 1.1rem; 
+            line-height: 1.6;
+        }
+        .textarea-label { font-weight: bold; margin-bottom: 10px; display: block; color: var(--accent); }
+        textarea {
+            width: 100%; background: #0a0a0c; border: 1px solid var(--border); color: #fff;
+            border-radius: 8px; padding: 15px; font-family: 'Outfit', sans-serif; resize: vertical; margin-bottom: 20px;
+        }
+        
+        /* Izceltais NOTES bloks */
+        .notes-container {
+            background: rgba(124, 58, 237, 0.05);
+            border: 2px dashed #7c3aed;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .notes-container .textarea-label { color: #a78bfa; }
+        .notes-container textarea { background: rgba(0,0,0,0.3); border: 1px solid rgba(124, 58, 237, 0.3); height: 150px; }
+        .notes-container textarea:focus { border-color: #7c3aed; outline: none; }
+
+        .main-box { height: 350px; }
+        .split-tables { display: flex; gap: 20px; align-items: flex-start; }
+        .split-tables table { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+<div class="top-nav" id="ui-nav" style="display:none;">
+    <div style="font-weight: bold;">IZMĒĢINĀJUMA TESTS ANGĻU VALODĀ</div>
+    <div>(optimālais mācību satura apguves līmenis)</div>
+    <div id="timer" style="color: var(--accent); font-family: 'JetBrains Mono';">00:00</div>
+</div>
+
+<!-- START SCREEN -->
+<div id="screen-start" class="screen active" style="justify-content: center;">
+    <div class="card" style="text-align: center;">
+        <h1 style="font-size: 3rem; margin: 0 0 20px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">IZMĒĢINĀJUMA TESTS ANGĻU VALODĀ</h1>
+        <h2>(optimālais mācību satura apguves līmenis)</h2>
+        <p>Iepazīsties ar norādījumiem.
+Darba lapās un katrā atbilžu lapā ieraksti kodu, kuru tu saņēmi, ienākot eksāmena telpā.
+Eksāmenā veicamo uzdevumu skaits, iegūstamo punktu skaits un paredzētais izpildes laiks: 
+</p>
+        <button class="btn" onclick="startExam()">Sākt eksāmenu</button>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- READING SECTION -->
+<!-- ========================================== -->
+
+<div id="screen-r1" class="screen">
+    <div class="container card">
+        <h2>READING: Task 1 (7 points)</h2>
+        <div class="instruction">Five people have shared their experience of having a gap year after high school. Read their comments (A–E) and answer the questions.</div>
+        <table>
+            <tr><th colspan="2">Questions</th><th>Text</th></tr>
+            <tr><td class="col-num">1.</td><td>Who has decided to develop their personal interests into career opportunities?</td><td class="col-input"><input type="text" id="r_t1_1" maxlength="1"></td></tr>
+            <tr><td class="col-num">2.</td><td>Who spent their time developing creative interests?</td><td class="col-input"><input type="text" id="r_t1_2" maxlength="1"></td></tr>
+            <tr><td class="col-num">3.</td><td>Who realised the importance of higher education during their gap year?</td><td class="col-input"><input type="text" id="r_t1_3" maxlength="1"></td></tr>
+            <tr><td class="col-num">4.</td><td>Whose gap year did not go as planned?</td><td class="col-input"><input type="text" id="r_t1_4" maxlength="1"></td></tr>
+            <tr><td class="col-num">5.</td><td>Who admits they used to think too highly of themselves?</td><td class="col-input"><input type="text" id="r_t1_5" maxlength="1"></td></tr>
+            <tr><td class="col-num">6.</td><td>Who views calculated risk-taking as worthwhile?</td><td class="col-input"><input type="text" id="r_t1_6" maxlength="1"></td></tr>
+            <tr><td class="col-num">7.</td><td>Whose experience could help students deal with the consequences of not getting what they wanted?</td><td class="col-input"><input type="text" id="r_t1_7" maxlength="1"></td></tr>
+        </table>
+        <button class="btn" onclick="showScreen('r2')">Next: Task 2</button>
+    </div>
+</div>
+
+<div id="screen-r2" class="screen">
+    <div class="container card">
+        <h2>READING: Task 2</h2>
+        <div class="instruction">For questions 8–13, match the most appropriate heading (A–H) to paragraphs 1–6.</div>
+        <div class="split-tables">
+            <table style="flex: 1;">
+                <tr><th></th><th>Paragraph</th><th>Heading</th></tr>
+                <tr><td class="col-num">8.</td><td>Paragraph 1</td><td class="col-input"><input type="text" id="r_t2_8" maxlength="1"></td></tr>
+                <tr><td class="col-num">9.</td><td>Paragraph 2</td><td class="col-input"><input type="text" id="r_t2_9" maxlength="1"></td></tr>
+                <tr><td class="col-num">10.</td><td>Paragraph 3</td><td class="col-input"><input type="text" id="r_t2_10" maxlength="1"></td></tr>
+                <tr><td class="col-num">11.</td><td>Paragraph 4</td><td class="col-input"><input type="text" id="r_t2_11" maxlength="1"></td></tr>
+                <tr><td class="col-num">12.</td><td>Paragraph 5</td><td class="col-input"><input type="text" id="r_t2_12" maxlength="1"></td></tr>
+                <tr><td class="col-num">13.</td><td>Paragraph 6</td><td class="col-input"><input type="text" id="r_t2_13" maxlength="1"></td></tr>
+            </table>
+            <table style="flex: 1.5;">
+                <tr><th colspan="2">Headings</th></tr>
+                <tr><td class="col-num">A</td><td>Not enough information yet</td></tr>
+                <tr><td class="col-num">B</td><td>When quality does not matter</td></tr>
+                <tr><td class="col-num">C</td><td>A clear solution with a limitation</td></tr>
+                <tr><td class="col-num">D</td><td>Connecting with nature throughout life</td></tr>
+                <tr><td class="col-num">E</td><td>Bringing nature into the city</td></tr>
+                <tr><td class="col-num">F</td><td>Recognition at the state level</td></tr>
+                <tr><td class="col-num">G</td><td>From informing about to encountering nature</td></tr>
+                <tr><td class="col-num">H</td><td>The quality of urban nature experiences matters</td></tr>
+            </table>
+        </div>
+        <div class="instruction" style="margin-top: 30px;">For questions 14–17, decide if the statements are true (T), false (F) or not mentioned (NM).</div>
+        <table>
+            <tr><th colspan="2">Statements</th><th style="width:40px">T</th><th style="width:40px">F</th><th style="width:40px">NM</th></tr>
+            <tr><td class="col-num">14.</td><td>The UK and Australia disagree on the need to improve human engagement with nature.</td>
+                <td><input type="radio" name="r_t2_14" value="T"></td><td><input type="radio" name="r_t2_14" value="F"></td><td><input type="radio" name="r_t2_14" value="NM"></td></tr>
+            <tr><td class="col-num">15.</td><td>A strong connection to nature typically results in more environmentally friendly behaviour.</td>
+                <td><input type="radio" name="r_t2_15" value="T"></td><td><input type="radio" name="r_t2_15" value="F"></td><td><input type="radio" name="r_t2_15" value="NM"></td></tr>
+            <tr><td class="col-num">16.</td><td>The success rate of programs connecting urban residents to nature varies by their duration.</td>
+                <td><input type="radio" name="r_t2_16" value="T"></td><td><input type="radio" name="r_t2_16" value="F"></td><td><input type="radio" name="r_t2_16" value="NM"></td></tr>
+            <tr><td class="col-num">17.</td><td>Spending time in urban nature may be sufficient to make people more environmentally aware.</td>
+                <td><input type="radio" name="r_t2_17" value="T"></td><td><input type="radio" name="r_t2_17" value="F"></td><td><input type="radio" name="r_t2_17" value="NM"></td></tr>
+        </table>
+        <button class="btn" onclick="showScreen('r3')">Next: Task 3</button>
+    </div>
+</div>
+
+<div id="screen-r3" class="screen">
+    <div class="container card">
+        <h2>READING: Task 3</h2>
+        <div class="instruction">Choose the correct answer (A, B, C or D).</div>
+        
+        <div class="mc-question">
+            <b>18. What is the main purpose of the article?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_18" value="A"> A To discuss how the structure of our favourite songs affects their appeal.</label>
+                <label><input type="radio" name="r_t3_18" value="B"> B To provide the scientific basis for the music people feel attracted to.</label>
+                <label><input type="radio" name="r_t3_18" value="C"> C To explain how the authors' sons select music for their playlists.</label>
+                <label><input type="radio" name="r_t3_18" value="D"> D To explain the science behind a music style becoming a favourite.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>19. According to paragraph 2, which is a likely reason for a song to become someone's favourite?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_19" value="A"> A Its lyrics combined with its emotional appeal.</label>
+                <label><input type="radio" name="r_t3_19" value="B"> B Its association with a specific genre.</label>
+                <label><input type="radio" name="r_t3_19" value="C"> C Its quality rather than its emotional appeal.</label>
+                <label><input type="radio" name="r_t3_19" value="D"> D Its emotive elements rather than its quality.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>20. Which of these is NOT given as an aspect of the brain's response to music?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_20" value="A"> A The area in which the brain combines lyrics and sound.</label>
+                <label><input type="radio" name="r_t3_20" value="B"> B The way brain regions process music.</label>
+                <label><input type="radio" name="r_t3_20" value="C"> C The formation of sophisticated associations in the brain.</label>
+                <label><input type="radio" name="r_t3_20" value="D"> D The pathway which the brain uses to convert music into emotions.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>21. We can infer from paragraph 3 that a song...</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_21" value="A"> A mostly gives us new feelings we have not experienced before.</label>
+                <label><input type="radio" name="r_t3_21" value="B"> B only brings back something we have already experienced.</label>
+                <label><input type="radio" name="r_t3_21" value="C"> C can be potentially used to evoke a particular response.</label>
+                <label><input type="radio" name="r_t3_21" value="D"> D triggers a different emotion every time it is listened to.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>22. Which is true about the two theories discussed in the article?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_22" value="A"> A Both theories suggest that music becomes meaningful through personal experiences.</label>
+                <label><input type="radio" name="r_t3_22" value="B"> B The theories disagree on the importance of musical structure and lyrics.</label>
+                <label><input type="radio" name="r_t3_22" value="C"> C Both theories deny the importance of the environment in which we listen to music.</label>
+                <label><input type="radio" name="r_t3_22" value="D"> D The theories agree that a song is either emotionally impactful or memory-based.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>23. What do we learn about the human brain from paragraph 4?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_23" value="A"> A It stores music as the main component of the experience.</label>
+                <label><input type="radio" name="r_t3_23" value="B"> B It stores music memories separate from emotions.</label>
+                <label><input type="radio" name="r_t3_23" value="C"> C It stores music in order to create a new experience.</label>
+                <label><input type="radio" name="r_t3_23" value="D"> D It stores music as part of a larger memory package.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>24. Why do artificial intelligence algorithms fail to capture our music preferences accurately?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_24" value="A"> A They are not advanced enough to analyse musical structure.</label>
+                <label><input type="radio" name="r_t3_24" value="B"> B They cannot keep up with the changes in personal choices.</label>
+                <label><input type="radio" name="r_t3_24" value="C"> C They cannot process the personal significance of music.</label>
+                <label><input type="radio" name="r_t3_24" value="D"> D They focus too much on trending music styles.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>25. The author of the article concludes that...</b>
+            <div class="mc-options">
+                <label><input type="radio" name="r_t3_25" value="A"> A we can predict whether a song will become a favourite.</label>
+                <label><input type="radio" name="r_t3_25" value="B"> B people find new favourite songs through coincidence.</label>
+                <label><input type="radio" name="r_t3_25" value="C"> C our favourite songs are consistent with our musical taste.</label>
+                <label><input type="radio" name="r_t3_25" value="D"> D people should take risks to discover new favourite music.</label>
+            </div>
+        </div>
+        
+        <button class="btn" onclick="generateReadingSheet()">View READING Answer Sheet</button>
+    </div>
+</div>
+
+<div id="screen-ans-read" class="screen">
+    <div class="container card">
+        <h2 style="text-align: center; border-bottom: 2px solid var(--border); padding-bottom: 15px;">READING ATBILŽU LAPA</h2>
+        <div class="answer-section"><h3>TASK 1</h3><div class="ans-grid" id="sheet-r1"></div></div>
+        <div class="answer-section"><h3>TASK 2</h3><div class="ans-grid" id="sheet-r2"></div></div>
+        <div class="answer-section"><h3>TASK 3</h3><div class="ans-grid" id="sheet-r3"></div></div>
+        <button class="btn" onclick="showScreen('l1')">Start LISTENING Section</button>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- LISTENING SECTION -->
+<!-- ========================================== -->
+
+<div id="screen-l1" class="screen">
+    <div class="container card">
+        <h2>LISTENING: Task 1 (6 points)</h2>
+        <div class="instruction">You will hear people speaking about their memories of important moments in life. Match each speaker with the statement (A-G).</div>
+        <div class="split-tables">
+            <table style="flex: 1;">
+                <tr><th></th><th>Statement</th></tr>
+                <tr><td>1. Speaker 1</td><td class="col-input"><input type="text" id="l_t1_1" maxlength="1"></td></tr>
+                <tr><td>2. Speaker 2</td><td class="col-input"><input type="text" id="l_t1_2" maxlength="1"></td></tr>
+                <tr><td>3. Speaker 3</td><td class="col-input"><input type="text" id="l_t1_3" maxlength="1"></td></tr>
+                <tr><td>4. Speaker 4</td><td class="col-input"><input type="text" id="l_t1_4" maxlength="1"></td></tr>
+                <tr><td>5. Speaker 5</td><td class="col-input"><input type="text" id="l_t1_5" maxlength="1"></td></tr>
+                <tr><td>6. Speaker 6</td><td class="col-input"><input type="text" id="l_t1_6" maxlength="1"></td></tr>
+            </table>
+            <table style="flex: 1.5;">
+                <tr><th colspan="2">This person</th></tr>
+                <tr><td class="col-num">A</td><td>was surprised by people's positive reaction to them.</td></tr>
+                <tr><td class="col-num">B</td><td>was impressed by someone's ability to entertain people.</td></tr>
+                <tr><td class="col-num">C</td><td>found inspiration in the lyrics of their favourite band.</td></tr>
+                <tr><td class="col-num">D</td><td>was inspired by someone's reasoning and performance.</td></tr>
+                <tr><td class="col-num">E</td><td>appreciates a lucky choice they made.</td></tr>
+                <tr><td class="col-num">F</td><td>overcame a fear.</td></tr>
+                <tr><td class="col-num">G</td><td>discovered their love for new genres.</td></tr>
+            </table>
+        </div>
+        <button class="btn" onclick="showScreen('l2')">Next: Task 2</button>
+    </div>
+</div>
+
+<div id="screen-l2" class="screen">
+    <div class="container card">
+        <h2>LISTENING: Task 2 (11 points)</h2>
+        <div class="instruction">Complete the gaps in the notes with the missing information.</div>
+        <div style="line-height: 2.5;">
+            1. Lazenby's first summer job included selling <input type="text" id="l_t2_1" style="width:150px; display:inline-block">.<br>
+            2. The summer job helped Lazenby develop <input type="text" id="l_t2_2" style="width:150px; display:inline-block">.<br>
+            3. Getting a summer job is referred to as a <input type="text" id="l_t2_3" style="width:150px; display:inline-block">.<br>
+            4. Between 2006 and 2016, the number of teenagers having a summer job dropped by <input type="text" id="l_t2_4" style="width:150px; display:inline-block">.<br>
+            5. The study suggests that students choose <input type="text" id="l_t2_5" style="width:150px; display:inline-block"> over getting a summer job.<br>
+            6. The speaker's father expected him to pay for <input type="text" id="l_t2_6" style="width:150px; display:inline-block"> himself.<br>
+            7. The speaker claims that summer jobs helped him improve his financial situation and <input type="text" id="l_t2_7" style="width:150px; display:inline-block">.<br>
+            8. The speaker's first job involved working with <input type="text" id="l_t2_8" style="width:150px; display:inline-block">.<br>
+            9. Doing summer jobs, the speaker met people who influenced his <input type="text" id="l_t2_9" style="width:150px; display:inline-block">.<br>
+            10. A person he met during a summer job inspired the speaker to take up <input type="text" id="l_t2_10" style="width:150px; display:inline-block"> as a career.<br>
+            11. The speaker believes that any summer job provides teenagers with <input type="text" id="l_t2_11" style="width:150px; display:inline-block">.
+        </div>
+        <button class="btn" onclick="showScreen('l3')">Next: Task 3</button>
+    </div>
+</div>
+
+<div id="screen-l3" class="screen">
+    <div class="container card">
+        <h2>LISTENING: Task 3 (8 points)</h2>
+        <div class="instruction">Choose the correct answer (A, B, C).</div>
+        
+        <div class="mc-question">
+            <b>1. According to Julia, what should people do regarding fake news?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_1" value="A"> A Limit sharing news on social media platforms.</label>
+                <label><input type="radio" name="l_t3_1" value="B"> B Share information only if it can help someone.</label>
+                <label><input type="radio" name="l_t3_1" value="C"> C Check if the information you post can be trusted.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>2. According to Ross, what should people do regarding fake news?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_2" value="A"> A Report people spreading fake news.</label>
+                <label><input type="radio" name="l_t3_2" value="B"> B Inform the author of the post that it is fake news.</label>
+                <label><input type="radio" name="l_t3_2" value="C"> C Ask for other people's opinion on the posted news.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>3. Why did Ross suggest taking action when you see fake news?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_3" value="A"> A We can decrease its harmful impact.</label>
+                <label><input type="radio" name="l_t3_3" value="B"> B We can change people's opinions.</label>
+                <label><input type="radio" name="l_t3_3" value="C"> C We can make ourselves feel better.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>4. According to the discussion, why should everyone act like reporters?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_4" value="A"> A To evaluate information before sharing it.</label>
+                <label><input type="radio" name="l_t3_4" value="B"> B To be able to find information quicker.</label>
+                <label><input type="radio" name="l_t3_4" value="C"> C To rely more on trustworthy sources.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>5. What does a regular person need to do before retweeting an article?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_5" value="A"> A Analyze the headline of the article.</label>
+                <label><input type="radio" name="l_t3_5" value="B"> B Check who it was written by.</label>
+                <label><input type="radio" name="l_t3_5" value="C"> C Check the content of the article.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>6. According to Ross, why do people share certain information online?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_6" value="A"> A People find information that supports their beliefs.</label>
+                <label><input type="radio" name="l_t3_6" value="B"> B People do not have enough time to check information.</label>
+                <label><input type="radio" name="l_t3_6" value="C"> C People share the information they find intriguing.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>7. Which statement is true, according to Ross?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_7" value="A"> A Links can sometimes be misleading.</label>
+                <label><input type="radio" name="l_t3_7" value="B"> B People should learn to work with sources.</label>
+                <label><input type="radio" name="l_t3_7" value="C"> C Most online sources cannot be trusted.</label>
+            </div>
+        </div>
+        <div class="mc-question">
+            <b>8. Which is true about the statistic that Ross mentions?</b>
+            <div class="mc-options">
+                <label><input type="radio" name="l_t3_8" value="A"> A Ross managed to trace its source.</label>
+                <label><input type="radio" name="l_t3_8" value="B"> B It was shared by one of Ross' listeners.</label>
+                <label><input type="radio" name="l_t3_8" value="C"> C It illustrates how fake news spreads.</label>
+            </div>
+        </div>
+
+            <button class="btn" onclick="generateListeningSheet()">View LISTENING Answer Sheet</button>
+        </div>
+    </div>
+
+    <div id="screen-ans-list" class="screen">
+        <div class="container card">
+            <h2 style="text-align: center; border-bottom: 2px solid var(--border); padding-bottom: 15px;">LISTENING ATBILŽU LAPA</h2>
+            <div class="answer-section"><h3>TASK 1</h3><div class="ans-grid" id="sheet-l1"></div></div>
+            <div class="answer-section"><h3>TASK 2</h3><div class="ans-grid" id="sheet-l2"></div></div>
+            <div class="answer-section"><h3>TASK 3</h3><div class="ans-grid" id="sheet-l3"></div></div>
+            <button class="btn" onclick="showScreen('w1')">Start WRITING Section</button>
+        </div>
+    </div>
+<div id="screen-w1" class="screen">
+        <div class="container card">
+            <h2>WRITING: Task 1</h2>
+            <div class="writing-task-text">
+                <strong>Task Context:</strong> Read the prompt carefully and write your response.
+            </div>
+            <div class="notes-container">
+                <span class="textarea-label">📝 Notes (Melnraksts - netiek vērtēts)</span>
+                <textarea id="w_t1_notes" placeholder="Izmanto šo laukumu..."></textarea>
+            </div>
+            <span class="textarea-label">Task 1 Final Text (Tiks vērtēts)</span>
+            <textarea id="w_t1_main" class="main-box" placeholder="Write your final text here..."></textarea>
+            <button class="btn" onclick="showScreen('w2')">Next: Writing Task 2</button>
+        </div>
+    </div> <div id="screen-w2" class="screen">
+        <div class="container card">
+            <h2>WRITING: Task 2</h2>
+            <textarea id="w_t2_main" class="main-box"></textarea>
+            <button class="btn" style="background: #10b981;" onclick="submitExamToTelegram()">IESNIEGT EKSĀMENU</button>
+        </div>
+    </div>
+
+    <div id="screen-post-submit" class="screen">
+        <div class="container card" style="text-align: center;">
+            <h2 style="color: var(--accent);">Darbs ir iesniegts! ✅</h2>
+            <p>Atbildes ir nosūtītas uz Telegram.</p>
+            <button class="btn" style="background: var(--accent-purple); margin-top: 20px;" onclick="showScreen('auth')">VĒRTĒT EKSĀMENU</button>
+        </div>
+    </div>
+
+    <div id="screen-auth" class="screen">
+        <div class="container card" style="max-width: 400px; text-align: center;">
+            <h3>Ievadiet paroli</h3>
+            <input type="password" id="admin-code" style="font-size: 1.5rem; width: 100%; margin: 15px 0;">
+            <button class="btn" onclick="checkAuth()">IEIET</button>
+        </div>
+    </div>
+
+    <div id="screen-results" class="screen">
+        <div class="container card">
+            <h2 style="text-align: center;">EKSĀMENA VĒRTĒŠANA</h2>
+            <div id="results-content"></div>
+            <div id="writing-display"></div>
+            <button class="btn" style="background: gold; color: #000;" onclick="calculateFinalScore()">APREĶINĀT REZULTĀTU</button>
+            <div id="final-summary" style="margin-top: 30px; padding: 25px; border-radius: 12px; display: none; text-align: center;"></div>
+        </div>
+    </div>
+
+<script>
+   function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-' + id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function startExam() {
+        document.getElementById('ui-nav').style.display = 'flex';
+        showScreen('r1');
+    }
+
+    function getVal(id) {
+        const radio = document.querySelector(`input[name="${id}"]:checked`);
+        if (radio) return radio.value;
+        const input = document.getElementById(id);
+        if (input) return input.value.trim() || "—";
+        return "—";
+    }
+
+    function generateReadingSheet() {
+        let h1 = ''; for(let i=1; i<=7; i++) h1 += `<div class="ans-box"><span>Q${i}</span><b>${getVal('r_t1_'+i)}</b></div>`;
+        document.getElementById('sheet-r1').innerHTML = h1;
+
+        let h2 = '';
+        for(let i=8; i<=13; i++) h2 += `<div class="ans-box"><span>Q${i}</span><b>${getVal('r_t2_'+i)}</b></div>`;
+        for(let i=14; i<=17; i++) h2 += `<div class="ans-box"><span>Q${i}</span><b>${getVal('r_t2_'+i)}</b></div>`;
+        document.getElementById('sheet-r2').innerHTML = h2;
+
+        let h3 = ''; for(let i=18; i<=25; i++) h3 += `<div class="ans-box"><span>Q${i}</span><b>${getVal('r_t3_'+i)}</b></div>`;
+        document.getElementById('sheet-r3').innerHTML = h3;
+
+        showScreen('ans-read');
+    }
+
+    function generateListeningSheet() {
+        let h1 = ''; for(let i=1; i<=6; i++) h1 += `<div class="ans-box"><span>Q${i}</span><b>${getVal('l_t1_'+i)}</b></div>`;
+        document.getElementById('sheet-l1').innerHTML = h1;
+
+        let h2 = ''; for(let i=1; i<=11; i++) h2 += `<div class="ans-box"><span>Q${i}</span><b style="font-size:0.9rem">${getVal('l_t2_'+i)}</b></div>`;
+        document.getElementById('sheet-l2').innerHTML = h2;
+
+        let h3 = ''; for(let i=1; i<=8; i++) h3 += `<div class="ans-box"><span>Q${i}</span><b>${getVal('l_t3_'+i)}</b></div>`;
+        document.getElementById('sheet-l3').innerHTML = h3;
+
+        showScreen('ans-list');
+    }
+
+    async function submitExamToTelegram() {
+        const BOT_TOKEN = "8793764122:AAGAD9-YMLLvO4NvTkR1BZ199Ykz-BMDP8o"; 
+        const CHAT_ID = "6185090723";
+
+        const btn = document.querySelector('button[onclick="submitExamToTelegram()"]');
+        btn.innerText = "SŪTA...";
+        btn.disabled = true;
+
+        let readingMsg = "📖 *READING SECTION*\n\n*Task 1*\n`";
+        for(let i=1; i<=7; i++) readingMsg += `${i}. ${getVal('r_t1_'+i)}\n`;
+        readingMsg += "`\n*Task 2*\n`";
+        for(let i=8; i<=17; i++) readingMsg += `${i}. ${getVal('r_t2_'+i)}\n`;
+        readingMsg += "`\n*Task 3*\n`";
+        for(let i=18; i<=25; i++) readingMsg += `${i}. ${getVal('r_t3_'+i)}\n`;
+        readingMsg += "`";
+
+        let listeningMsg = "🎧 *LISTENING SECTION*\n\n*Task 1*\n`";
+        for(let i=1; i<=6; i++) listeningMsg += `${i}. ${getVal('l_t1_'+i)}\n`;
+        listeningMsg += "`\n*Task 2*\n`";
+        for(let i=1; i<=11; i++) listeningMsg += `${i}. ${getVal('l_t2_'+i)}\n`;
+        listeningMsg += "`\n*Task 3*\n`";
+        for(let i=1; i<=8; i++) listeningMsg += `${i}. ${getVal('l_t3_'+i)}\n`;
+        listeningMsg += "`";
+
+        const w1Msg = "✍️ *WRITING: TASK 1*\n\n" + (document.getElementById('w_t1_main').value || "_Nav_");
+        const w2Msg = "✍️ *WRITING: TASK 2*\n\n" + (document.getElementById('w_t2_main').value || "_Nav_");
+
+        const send = async (text) => {
+            return await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'Markdown' })
+            });
+        };
+
+        try {
+            await send(readingMsg);
+            await send(listeningMsg);
+            await send(w1Msg);
+            let resFinal = await send(w2Msg);
+
+            if (resFinal.ok) {
+                alert("✅ Eksāmens veiksmīgi iesniegts!");
+                showScreen('post-submit'); 
+            } else {
+                alert("❌ Kļūda: Pārbaudi Token/ID.");
+                btn.innerText = "IESNIEGT EKSĀMENU";
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert("❌ Sistēmas kļūda.");
+            btn.innerText = "IESNIEGT EKSĀMENU";
+            btn.disabled = false;
+        }
+    }
+
+    // --- ФУНКЦИИ ДЛЯ ОЦЕНИВАНИЯ ---
+    function checkAuth() {
+        if(document.getElementById('admin-code').value === "020701") {
+            renderEvaluation();
+            showScreen('results');
+        } else { alert("Nepareizs kods!"); }
+    }
+
+    // --- ATJAUNOTĀ VĒRTĒŠANAS FUNKCIJA ---
+function renderEvaluation() {
+    const createRow = (title, start, end, prefix) => {
+        let h = `<h3 style="color:var(--accent); margin-top:30px;">${title}</h3><table class="eval-table"><tr><th>#</th><th>Atbilde</th><th>Vērtējums</th></tr>`;
+        for (let i = start; i <= end; i++) {
+            let ans = getVal(prefix + i);
+            h += `<tr><td>${i}</td><td><b>${ans}</b></td><td>
+                <label style="margin-right:15px; color:#10b981; cursor:pointer;"><input type="radio" name="p_${prefix}${i}" value="1" class="score-input"> Pareizi </label>
+                <label style="color:#ff4d4d; cursor:pointer;"><input type="radio" name="p_${prefix}${i}" value="0" class="score-input" checked> Nepareizi </label>
+            </td></tr>`;
+        }
+        return h + `</table>`;
+    };
+
+    // 1. Tests (Reading & Listening)
+    document.getElementById('results-content').innerHTML = 
+        createRow("Reading Task 1", 1, 7, "r_t1_") + 
+        createRow("Reading Task 2", 8, 17, "r_t2_") + 
+        createRow("Reading Task 3", 18, 25, "r_t3_") +
+        createRow("Listening Task 1", 1, 6, "l_t1_") + 
+        createRow("Listening Task 2", 1, 11, "l_t2_") + 
+        createRow("Listening Task 3", 1, 8, "l_t3_");
+
+    // 2. Writing sadaļa ar kritērijiem
+    document.getElementById('writing-display').innerHTML = `
+        <div style="margin-top:40px; border-top: 2px solid var(--border); padding-top:20px;">
+            <h2 style="text-align:center;">WRITING EVALUATION</h2>
+            
+            <div class="writing-eval-box">
+                <h4>Task 1 Text:</h4>
+                <div style="white-space:pre-wrap; background:#111; padding:15px; border-radius:5px; margin-bottom:15px;">${document.getElementById('w_t1_main').value || "NAV TEKSTA"}</div>
+                
+                <h4 style="color:gold;">1. uzdevuma vērtēšanas kritēriji (max 12 p.)</h4>
+                <table class="eval-table">
+                    <tr><th>Kritērijs</th><th>Max</th><th>Punkti (0-3)</th></tr>
+                    <tr><td>Saturs un uzdevuma izpilde</td><td>3</td><td><input type="number" class="w-p" max="3" min="0" value="0"></td></tr>
+                    <tr><td>Organizācija un tekstveide</td><td>3</td><td><input type="number" class="w-p" max="3" min="0" value="0"></td></tr>
+                    <tr><td>Valodas līdzekļu daudzveidība</td><td>3</td><td><input type="number" class="w-p" max="3" min="0" value="0"></td></tr>
+                    <tr><td>Valodas lietojuma pareizība</td><td>3</td><td><input type="number" class="w-p" max="3" min="0" value="0"></td></tr>
+                </table>
+            </div>
+
+            <div class="writing-eval-box" style="border-left-color: var(--accent);">
+                <h4>Task 2 Text:</h4>
+                <div style="white-space:pre-wrap; background:#111; padding:15px; border-radius:5px; margin-bottom:15px;">${document.getElementById('w_t2_main').value || "NAV TEKSTA"}</div>
+                
+                <h4 style="color:gold;">2. uzdevuma vērtēšanas kritēriji (max 20 p.)</h4>
+                <table class="eval-table">
+                    <tr><th>Kritērijs</th><th>Max</th><th>Punkti (0-5)</th></tr>
+                    <tr><td>Saturs un uzdevuma izpilde</td><td>5</td><td><input type="number" class="w-p2" max="5" min="0" value="0"></td></tr>
+                    <tr><td>Organizācija un tekstveide</td><td>5</td><td><input type="number" class="w-p2" max="5" min="0" value="0"></td></tr>
+                    <tr><td>Valodas līdzekļu daudzveidība</td><td>5</td><td><input type="number" class="w-p2" max="5" min="0" value="0"></td></tr>
+                    <tr><td>Valodas lietojuma pareizība</td><td>5</td><td><input type="number" class="w-p2" max="5" min="0" value="0"></td></tr>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+// --- ATJAUNOTA APRĒĶINA FUNKCIJA (KOPĀ 82 PUNKTI) ---
+function calculateFinalScore() {
+    let testPoints = 0;
+    document.querySelectorAll('.score-input:checked').forEach(r => testPoints += Number(r.value));
+    
+    let wPoints = 0;
+    // Task 1: max 12
+    document.querySelectorAll('.w-p').forEach(i => {
+        let val = Math.min(3, Math.max(0, Number(i.value)));
+        wPoints += val;
+    });
+    // Task 2: max 20
+    document.querySelectorAll('.w-p2').forEach(i => {
+        let val = Math.min(5, Math.max(0, Number(i.value)));
+        wPoints += val;
+    });
+
+    let total = testPoints + wPoints;
+    let percent = (total / 82) * 100;
+    
+    let summary = document.getElementById('final-summary');
+    summary.style.display = 'block';
+
+    let color = percent < 20 ? "#ff4d4d" : (percent >= 70 ? "#00f2ff" : "#10b981");
+    let statusTxt = percent < 20 ? "Eksāmens nav nokārtots" : (percent >= 70 ? "Eksāmens nokārtots (Augsts līmenis)" : "Eksāmens nokārtots");
+
+    summary.style.border = `3px solid ${color}`;
+    summary.style.background = `rgba(0,0,0,0.8)`;
+    summary.innerHTML = `
+        <h1 style="color:${color}; font-size: 3rem; margin:0;">${percent.toFixed(1)}%</h1>
+        <h2 style="margin:10px 0;">${statusTxt}</h2>
+        <p style="font-size:1.2rem;">Kopējie punkti: <b>${total}</b> no 82</p>
+        <hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
+        <p>Tests (R+L): ${testPoints} p. | Writing: ${wPoints} p.</p>
+        <button class="btn" style="background:#444; margin-top:15px;" onclick="window.print()">Saglabāt PDF</button>
+    `;
+    
+    summary.scrollIntoView({ behavior: 'smooth' });
+};
+
+        document.getElementById('results-content').innerHTML = 
+            createRow("Reading T1", 1, 7, "r_t1_") + createRow("Reading T2", 8, 17, "r_t2_") + createRow("Reading T3", 18, 25, "r_t3_") +
+            createRow("Listening T1", 1, 6, "l_t1_") + createRow("Listening T2", 1, 11, "l_t2_") + createRow("Listening T3", 1, 8, "l_t3_");
+
+        document.getElementById('writing-display').innerHTML = `
+            <div class="writing-eval-box"><h4>Task 1 Text:</h4><div style="white-space:pre-wrap">${document.getElementById('w_t1_main').value}</div></div>
+            <p>Task 1 Punkti (max 3 par katru): <input type="number" class="w-p" max="3" value="0"> <input type="number" class="w-p" max="3" value="0"> <input type="number" class="w-p" max="3" value="0"> <input type="number" class="w-p" max="3" value="0"></p>
+            <div class="writing-eval-box"><h4>Task 2 Text:</h4><div style="white-space:pre-wrap">${document.getElementById('w_t2_main').value}</div></div>
+            <p>Task 2 Punkti (max 5 par katru): <input type="number" class="w-p2" max="5" value="0"> <input type="number" class="w-p2" max="5" value="0"> <input type="number" class="w-p2" max="5" value="0"> <input type="number" class="w-p2" max="5" value="0"></p>
+        `;
+    
+
+    function calculateFinalScore() {
+        let testPoints = 0;
+        document.querySelectorAll('.score-input:checked').forEach(r => testPoints += Number(r.value));
+        
+        let wPoints = 0;
+        document.querySelectorAll('.w-p').forEach(i => wPoints += Math.min(3, Number(i.value)));
+        document.querySelectorAll('.w-p2').forEach(i => wPoints += Math.min(5, Number(i.value)));
+
+        let total = testPoints + wPoints;
+        let percent = (total / 82) * 100;
+        let summary = document.getElementById('final-summary');
+        summary.style.display = 'block';
+
+        let color = percent < 20 ? "#ff4d4d" : (percent >= 70 ? "#00f2ff" : "#10b981");
+        let txt = percent < 20 ? "Eksāmens nav nokārtots" : (percent >= 70 ? "Eksāmens ir nokārtots. B2 līmenis." : "Eksāmens ir nokārtots");
+
+        summary.style.border = `2px solid ${color}`;
+        summary.innerHTML = `<h1 style="color:${color}">${percent.toFixed(1)}%</h1><p>${txt}</p><p>Punkti: ${total} no 82</p>`;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
