@@ -100,10 +100,10 @@
             margin-bottom: 40px;
         }
         .notes-container .textarea-label { color: #a78bfa; }
-        .notes-container textarea { background: rgba(0,0,0,0.3); border: 1px solid rgba(124, 58, 237, 0.3); height: 150px; }
+        .notes-container textarea { background: rgba(0,0,0,0.3); border: 1px solid rgba(124, 58, 237, 0.3); height: 300px; }
         .notes-container textarea:focus { border-color: #7c3aed; outline: none; }
 
-        .main-box { height: 350px; }
+        .main-box { height: 600px; }
         .split-tables { display: flex; gap: 20px; align-items: flex-start; }
         .split-tables table { margin-bottom: 0; }
     </style>
@@ -341,10 +341,10 @@ Eksāmenā veicamo uzdevumu skaits, iegūstamo punktu skaits un paredzētais izp
                 <strong>Task Context:</strong> Read the prompt carefully and write your response.
             </div>
             <div class="notes-container">
-                <span class="textarea-label">📝 Notes (Melnraksts - netiek vērtēts)</span>
+                <span class="textarea-label">Izmanto šo lapu uzmetumam! (netiek vērtēts!)</span>
                 <textarea id="w_t1_notes" placeholder="Izmanto šo laukumu..."></textarea>
             </div>
-            <span class="textarea-label">Task 1 Final Text (Tiks vērtēts)</span>
+            <span class="textarea-label">Izvēlies vienu no uzdevuma variantiem (Task A vai Task B), kurus izsniegs eksāmena vadītājs. Norādi atvēlētajā vietā, kuru no uzdevuma variantiem (Task A vai Task B) tu veiksi. Uzmetumam izmanto tam paredzēto lapu.</span>
             <textarea id="w_t1_main" class="main-box" placeholder="Write your final text here..."></textarea>
             <button class="btn" style="background: #10b981;" onclick="submitExamToTelegram()">IESNIEGT EKSĀMENU</button>
         </div>
